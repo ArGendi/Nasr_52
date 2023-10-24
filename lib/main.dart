@@ -3,6 +3,7 @@ import 'package:flutter_nasr_52_multiple_pages/screens/add_contact.dart';
 import 'package:flutter_nasr_52_multiple_pages/screens/home_screen.dart';
 import 'package:flutter_nasr_52_multiple_pages/screens/profile_screen.dart';
 import 'package:flutter_nasr_52_multiple_pages/screens/responsive_screen.dart';
+import 'package:flutter_nasr_52_multiple_pages/screens/show_contact.dart';
 import 'package:flutter_nasr_52_multiple_pages/screens/splash_screen.dart';
 import 'package:flutter_nasr_52_multiple_pages/screens/text_formfeild_screen.dart';
 import 'package:flutter_nasr_52_multiple_pages/screens/textfield_screen.dart';
@@ -21,8 +22,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => AddContactScreen(),
+        '/': (context) => ShowContactsScreen(),
+        'add contact': (context) => AddContactScreen(),
         'text form field': (context) => TextFormFieldScreen(),
         'text field': (context) => TextFieldScreen(),
         'responsive': (context) => ResponsiveScreen(),

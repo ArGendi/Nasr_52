@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nasr_52_multiple_pages/models/contact.dart';
 import 'package:hive/hive.dart';
 
 class AddContactScreen extends StatefulWidget {
@@ -9,13 +10,13 @@ class AddContactScreen extends StatefulWidget {
 }
 
 class _AddContactScreenState extends State<AddContactScreen> {
-  String? name;
-  String? phone;
+  Contact contact = Contact();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -26,7 +27,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
               children: [
                 TextFormField(
                   onSaved: (value){
-                    name = value;
+                    contact.name = value;
                   },
                   validator: (value){
                     if(value!.isEmpty){
@@ -42,8 +43,9 @@ class _AddContactScreenState extends State<AddContactScreen> {
                 ),
                 SizedBox(height: 15,),
                 TextFormField(
+                  initialValue: '',
                   onSaved: (value){
-                    phone = value;
+                    contact.phone = value;
                   },
                   validator: (value){
                     if(value!.isEmpty){
@@ -68,10 +70,8 @@ class _AddContactScreenState extends State<AddContactScreen> {
                     if(valid){
                       formKey.currentState!.save();
                       var box = Hive.box('contacts');
-                      await box.add({
-                        'name' : name,
-                        'phone': phone,
-                      });
+                      await box.add(contact.toMap());
+                      formKey.currentState!.reset();
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor: Colors.green ,content: Text('Added succesfully'),));
                     }
                   },
