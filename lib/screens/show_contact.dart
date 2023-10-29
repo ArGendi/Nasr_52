@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nasr_52_multiple_pages/local/my_database.dart';
 import 'package:flutter_nasr_52_multiple_pages/models/contact.dart';
 import 'package:hive/hive.dart';
 
@@ -12,7 +13,7 @@ class ShowContactsScreen extends StatefulWidget {
 class _ShowContactsScreenState extends State<ShowContactsScreen> {
   List<Contact> contacts = [];
 
-  void getDataFromDB(){
+  void getDataFromDBWithHive(){
    Box box = Hive.box("contacts");
    List keys = box.keys.toList(); // ex. [0,1,2]
    List<Contact> readedContact = [];
@@ -25,14 +26,21 @@ class _ShowContactsScreenState extends State<ShowContactsScreen> {
    setState(() {
      contacts = readedContact;
    });
+  }
 
+  void getDataFromSQFLite() async{
+    MyDataBase myDataBase = MyDataBase();
+    List<Contact> data = await myDataBase.getContacts();
+    setState(() {
+      contacts = data;
+    });
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getDataFromDB();
+    getDataFromSQFLite();
   }
 
   @override
@@ -42,7 +50,7 @@ class _ShowContactsScreenState extends State<ShowContactsScreen> {
         actions: [
           IconButton(
             onPressed: (){
-              Navigator.pushNamed(context, 'add contact');
+              Navigator.pushNamed(context, 'add contact sqflite');
             }, 
             icon: Icon(Icons.add),
           ),
@@ -57,11 +65,19 @@ class _ShowContactsScreenState extends State<ShowContactsScreen> {
               children: [
                 IconButton(
                   onPressed: () async{
-                    Box box = Hive.box("contacts");
-                    setState(() { // To change it instantly in UI
-                      contacts[i].name = 'Mai'; 
+                    // update with hive
+                    // Box box = Hive.box("contacts");
+                    // setState(() { // To change it instantly in UI
+                    //   contacts[i].name = 'Mai'; 
+                    // });
+                    // await box.put(contacts[i].key, contacts[i].toMap()); // to save it in database
+                  
+                    // update with sqflite
+                    setState(() {
+                      contacts[i].name = 'Mariam';
                     });
-                    await box.put(contacts[i].key, contacts[i].toMap()); // to save it in database
+                    MyDataBase myDataBase = MyDataBase();
+                    myDataBase.updateContact(contacts[i]);
                   }, 
                   icon: Icon(Icons.update),
                 ),
@@ -78,11 +94,19 @@ class _ShowContactsScreenState extends State<ShowContactsScreen> {
                   ],
                 ),
                 IconButton(
-                  onPressed: (){
-                    Box box = Hive.box("contacts");
-                    box.delete(contacts[i].key); // delete from database
+                  onPressed: () async{
+                    // delete by Hive
+                    // Box box = Hive.box("contacts");
+                    // box.delete(contacts[i].key); // delete from database
+                    // setState(() {
+                    //   contacts.removeAt(i); // delete from list
+                    // });
+
+                    // delete by sqflite
+                    MyDataBase myDataBase = MyDataBase();
+                    await myDataBase.deleteContact(contacts[i]);
                     setState(() {
-                      contacts.removeAt(i); // delete from list
+                      contacts.removeAt(i);
                     });
                   }, 
                   icon: Icon(Icons.delete),

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nasr_52_multiple_pages/local/my_database.dart';
 import 'package:flutter_nasr_52_multiple_pages/models/contact.dart';
 import 'package:hive/hive.dart';
 
-class AddContactScreen extends StatefulWidget {
-  const AddContactScreen({super.key});
+class AddContactWithSQFLiteScreen extends StatefulWidget {
+  const AddContactWithSQFLiteScreen({super.key});
 
   @override
-  State<AddContactScreen> createState() => _AddContactScreenState();
+  State<AddContactWithSQFLiteScreen> createState() => _AddContactScreenState();
 }
 
-class _AddContactScreenState extends State<AddContactScreen> {
+class _AddContactScreenState extends State<AddContactWithSQFLiteScreen> {
   Contact contact = Contact();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -69,9 +70,9 @@ class _AddContactScreenState extends State<AddContactScreen> {
                     bool valid = formKey.currentState!.validate();
                     if(valid){
                       formKey.currentState!.save();
-                      // Hive database
-                      var box = Hive.box('contacts');
-                      await box.add(contact.toMap());
+                      // sqflite database
+                      MyDataBase myDataBase = MyDataBase();
+                      await myDataBase.insertContact(contact);
                       formKey.currentState!.reset();
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor: Colors.green ,content: Text('Added succesfully'),));
                     }
