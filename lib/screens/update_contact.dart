@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_nasr_52_multiple_pages/cubits/contact_cubit.dart';
 import 'package:flutter_nasr_52_multiple_pages/models/contact.dart';
-import 'package:hive/hive.dart';
 
-class AddContactScreen extends StatefulWidget {
-  const AddContactScreen({super.key});
+class UpdateContactScreen extends StatefulWidget {
+  final int index;
+  const UpdateContactScreen({super.key, required this.index});
 
   @override
-  State<AddContactScreen> createState() => _AddContactScreenState();
+  State<UpdateContactScreen> createState() => _UpdateContactScreenState();
 }
 
-class _AddContactScreenState extends State<AddContactScreen> {
+class _UpdateContactScreenState extends State<UpdateContactScreen> {
   Contact contact = Contact();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -26,6 +28,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
+                  initialValue: BlocProvider.of<ContactCubit>(context).contacts[widget.index].name,
                   onSaved: (value){
                     contact.name = value;
                   },
@@ -43,7 +46,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                 ),
                 SizedBox(height: 15,),
                 TextFormField(
-                  initialValue: '',
+                  initialValue: BlocProvider.of<ContactCubit>(context).contacts[widget.index].phone,
                   onSaved: (value){
                     contact.phone = value;
                   },
@@ -69,14 +72,11 @@ class _AddContactScreenState extends State<AddContactScreen> {
                     bool valid = formKey.currentState!.validate();
                     if(valid){
                       formKey.currentState!.save();
-                      // Hive database
-                      var box = Hive.box('contacts');
-                      await box.add(contact.toMap());
-                      //formKey.currentState!.reset();
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor: Colors.green ,content: Text('Added succesfully'),));
+                      BlocProvider.of<ContactCubit>(context).updateContact(widget.index, contact);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor: Colors.green ,content: Text('Updated ya m3lm'),));
                     }
                   },
-                  child : Text('add'),
+                  child : Text('Update'),
                 ),
               ],
             ),

@@ -37,9 +37,9 @@ class MyDataBase{
     await my_DB.delete("contacts", where: "phone = ?" , whereArgs: [c.phone]);
   }
 
-  Future<void> updateContact(Contact c) async{
+  Future<void> updateContact(Contact oldContact, Contact newContact) async{
     Database my_DB = await openDB();
-    await my_DB.update('contacts', c.toMap(), where: 'phone = ?' , whereArgs: [c.phone]);
+    await my_DB.update('contacts', newContact.toMap(), where: 'phone = ?' , whereArgs: [oldContact.phone]);
   }
 
 }

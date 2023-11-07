@@ -14,4 +14,8 @@ class MySharedPref{
   static String? getEmail(){
     return sharedPreferences.getString('email');
   }
+
+  void removeEmail(){
+    sharedPreferences.remove('email');
+  }
 }

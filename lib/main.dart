@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_nasr_52_multiple_pages/cubits/contact_cubit.dart';
 import 'package:flutter_nasr_52_multiple_pages/local/shared_preference.dart';
 import 'package:flutter_nasr_52_multiple_pages/screens/add_contact.dart';
 import 'package:flutter_nasr_52_multiple_pages/screens/add_contact_with_sqflite.dart';
@@ -25,19 +27,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/': (context) => SharedPrefScreen(),
-        'add contact sqflite': (context) => AddContactWithSQFLiteScreen(),
-        'add contact': (context) => AddContactScreen(),
-        'text form field': (context) => TextFormFieldScreen(),
-        'text field': (context) => TextFieldScreen(),
-        'responsive': (context) => ResponsiveScreen(),
-        'splash' : (context) => SplashScreen(),
-        'home': (context) => HomeScreen(),
-        'profile': (context) => ProfileScreen(),
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ContactCubit()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        routes: {
+          '/': (context) => ShowContactsScreen(),
+          'shared prefrence': (context) => SharedPrefScreen(),
+          'add contact sqflite': (context) => AddContactWithSQFLiteScreen(),
+          'add contact': (context) => AddContactScreen(),
+          'text form field': (context) => TextFormFieldScreen(),
+          'text field': (context) => TextFieldScreen(),
+          'responsive': (context) => ResponsiveScreen(),
+          'splash' : (context) => SplashScreen(),
+          'home': (context) => HomeScreen(),
+          'profile': (context) => ProfileScreen(),
+        },
+      ),
     );
   }
 }
